@@ -1,8 +1,0 @@
-#CXXFLAGS=-Wall
-
-prog: Programme.cpp Chaine.cpp
-	g++ -g -o $@ $^
-	./$@
-
-clean:
-	rm -f *.o prog *.cpp~
