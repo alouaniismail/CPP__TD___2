@@ -1,0 +1,7 @@
+Les classes
+Les constructeurs et l'@overload( le sur-chargement )
+Les destructeurs sans arguments et leurs signatures traceurs d'appels)
+Allocation/libération avec valgrind au niveau d'un constructeur utilsiant strcpy
+Initialisation par défaut avec 0 et NULL (const char*, automatique A a)
+Par copie(passage par référence pour application d'une copie sinon le delete a la fin pourrait detruire un pointeur ainsi le delete classique a la fin du main pour l'automatique (exemple: annexe(chaine1)) va generer l'erreur: double free).
+=>Prototype: void annexe(Chaine& s);(le nombre de destructions est le meme que le nombre d'instanciations)

@@ -1,0 +1,44 @@
+gestion memoire
+utilisation references
+operateurs
+===========================
+1.Passage par référence
+(reprise de la fin (exo5) du td1(precedent celui-la))
+2.Passage par référence constante:
+la modification de void annexe(Chaine &s) en void annexe(const Chaine& s) va dire au compilateur que la fonction ne va pas modifier la chaine mais la fonction fait appel a des fonctions membres de la classe qui ne sont en prototype const en partie donc probleme, d'où l'erreur.
+REGLES:
+Une fois, on dispose d'une référence, c'est à dire qu'on veut pas un delete et éviter un double free a 99% des cas, d'où les applications possibles de certains membres, d'où l'appel'' à vais-je modifier l'objet, d'où le reflexe de const pour la reference et pour les fonctions membre de la classe dans le .hpp et le .cpp a la fin de la signature pour éviter les confusions d'une partie à UNE AUTRE.
+Overloading (surcharge) avec meme mais une sans const et l'autre ajout de <-.avec const. Voila.
+==================================================
+2.Gestion de la recopie des objets:
+2.1.Recopie:
+On fera une instanciation puis une autre via Chaine s2(s1)(constructeur par recopie par défaut) et Chaine s3=s1 via une allocation automatique discrète et une affectation c++ gère les types on est bon. Puis appel a debug() qui affichera une chaine pour les toutes, avec gdb les adresses de s1,s2,s3 sont toutes ### ce qui est logique par contre _donnees dont l'adresse est dans le tas est un attribut commun à tous d'où l'erreur. 
+2.2.Constructeur par copie:
+On @overload le constructeur par recopie via la signature dans le .hpp:
+Chaine (const Chaine &c) qui fera :_taille(c.taille) et _donnees=NULL si c._donnees==NULL ou bien _donnees=new char[c._taille+1] puis std::strcpy(_donnees,c._donnees). Voilà. Ainsi la libération de ressources dans ce cas se ferait sans aucun problème, aucune donnée en adresse(pile/tas) commune aux 3 instances automatiques EN PILE (&###).
+2.3.explicit:
+On déclare le constructeur de copie en explicit seulement en délcaration dans le .hpp ceci implique des declarations de valeurs de types Chaine seulement en Chaine s?(s_reference) et pas comme s3(Chaine s3=s1 ou bien Chaine s3;s3=s1; qui est une conversion ''²²² implicite).
+On ajoute une fonction print qui prend un Chaine applique le debug et le retourne, on fait ceci, cela pose problème. Premièrement, on a appris que l'argument vu _donnees en tas tjrs en Chaine &c et deuxièment le retour va être s soit une signature de (existant) Chaine& print(Chaine& c); en extern pas statique /au *.hpp(()).
+On retourne pas un type --valeur Chaine car cela peut persister en mémoire et créer des problèmes alors que cela n'existe globalement plus car c'est juste une référence passée elle quitte le programme on s'en rappelle plus mais lever pas de Chaine& risque d'accumuler les fuites mémoires on renvoie l'étiquette comme cela pas de problème au niveau de la gestion mémoires.
+=======================================================
+3.Opérateurs:(!!)
+->Opérateur d'affectation:(nous y voilà)
+s2=s1 c'est la 3ieme instruction fait en sorte d'avoir une instance abstraite et lui affecter toutes les données de s1 en s2 (les injecter en nouveau) ; le problème c'est que ceci fait disparaître les données de s2 avant ce qui crée des leak summary errors et des erreurs de invalid free une seule puis arret car definitely lost et le double free aussi vu qu'on veut libérer 2 fois les mêmes ressources.
+=>Il faut définir un nouveau opérateur 'non par défaut' d'affectation. 
+SIGNATURE:
+const Chaine& operator=(const Chaine&);
+voir commentaires sur le choix de 1 et pas de 2 (debut different seulement)
+C'est fini, on teste tous dans les commentsy compris la gestion de la seule error : invalid free of size 1.(valgrind)
+->opérateur []:
+la signature sera:
+const char& Chaine::operator[](unsigned int indice) const;
+le retour sera de type const elle agit sur une instance pas de modif. avec allocation dynamique => const à la fin et le type de retour aussi pour ne pas confondre().
+VOILA.
+AUCUNE FAUTE DE VALGRIND VUE.
+rq: on manipule des Chaine de type d'abord const (lefttt) donc a priori le type de retour sera const char& (char& tjrs pour éviter les erreurs de mémoires en général).
+->Opérateur de conversion::(!!!!!!!!!!!!)
+a retenir lorsqu'on a: (const char*)s avec s une classe Chaine, un opérateur de conversion est déjà définie. On le redefinit, si on veut cette valeur ou l'afficheer (retour normal1), on doit appliquer(ajout de méthode publique) au *.hpp:
+	operator const char*() const;//A RETENIR!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+->Et finalement, l'opérateur de concaténation:
+voir les executions, les commentaires.
+FIN_TD2.
