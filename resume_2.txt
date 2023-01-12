@@ -37,7 +37,7 @@ VOILA.
 AUCUNE FAUTE DE VALGRIND VUE.
 rq: on manipule des Chaine de type d'abord const (lefttt) donc a priori le type de retour sera const char& (char& tjrs pour éviter les erreurs de mémoires en général).
 ->Opérateur de conversion::(!!!!!!!!!!!!)
-a retenir lorsqu'on a: (const char*)s avec s une classe Chaine, un opérateur de conversion est déjà définie. On le redefinit, si on veut cette valeur ou l'afficheer (retour normal1), on doit appliquer(ajout de méthode publique) au *.hpp:
+a retenir lorsqu'on a: (const char*)s avec s une classe Chaine, un opérateur de conversion est déjà définie. On le redefinit, si on veut cette valeur ou l'afficher (retour normal1), on doit appliquer(ajout de méthode publique) au *.hpp:
 	operator const char*() const;//A RETENIR!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 ->Et finalement, l'opérateur de concaténation:
 voir les executions, les commentaires.
